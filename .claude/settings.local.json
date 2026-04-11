@@ -8,7 +8,9 @@
       "Bash(npm run:*)",
       "WebFetch(domain:fsd.how)",
       "Bash(rm -f src/App.tsx src/main.tsx)",
-      "Bash(rm -rf src/components src/pages)"
+      "Bash(rm -rf src/components src/pages)",
+      "WebSearch",
+      "Bash(npx playwright:*)"
     ]
   }
 }

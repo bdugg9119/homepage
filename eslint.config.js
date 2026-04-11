@@ -7,7 +7,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "playwright-report", "test-results"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -45,6 +45,13 @@ export default defineConfig([
 
       // Enforce consistent imports
       "no-duplicate-imports": "error",
+    },
+  },
+  {
+    files: ["src/test/**", "**/*.test.{ts,tsx}", "e2e/**"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
     },
   },
 ]);
