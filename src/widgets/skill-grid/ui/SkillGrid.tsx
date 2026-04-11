@@ -10,6 +10,7 @@ const SKILL_CATEGORIES: SkillCategory[] = [
       "Conversational UI",
       "Prompt Engineering",
       "GenAI Product Dev",
+      "Agent Workflow Automation"
     ],
   },
   {

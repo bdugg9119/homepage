@@ -14,7 +14,7 @@ function ResumeSkills(): React.ReactElement {
         <p>
           <span className="font-semibold text-text-primary">AI & LLM Integration: </span>
           Streaming LLM Responses, Custom Tool Orchestration, Conversational UI, REST-Based LLM
-          Pipelines, Prompt Engineering, GenAI Product Development
+          Pipelines, Prompt Engineering, GenAI Product Development, Agentic Workflow Automation
         </p>
         <p>
           <span className="font-semibold text-text-primary">Frontend & Testing: </span>
