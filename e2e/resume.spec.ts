@@ -19,8 +19,9 @@ test.describe("Resume Page", () => {
   });
 
   test("renders the Technical Skills section in the resume", async ({ page }) => {
+    await expect(page.getByText("AI & LLM Integration:")).toBeVisible();
     await expect(page.getByText("Frontend & Testing:")).toBeVisible();
-    await expect(page.getByText("Backend, Infrastructure & Tools:")).toBeVisible();
+    await expect(page.getByText("Backend, Infra & Tools:")).toBeVisible();
   });
 
   test("renders all work experience entries", async ({ page }) => {

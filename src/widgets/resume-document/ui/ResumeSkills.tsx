@@ -12,16 +12,20 @@ function ResumeSkills(): React.ReactElement {
       <ResumeSectionHeading title="Technical Skills" />
       <div className="space-y-2 text-sm text-text-secondary">
         <p>
+          <span className="font-semibold text-text-primary">AI & LLM Integration: </span>
+          Streaming LLM Responses, Custom Tool Orchestration, Conversational UI, REST-Based LLM
+          Pipelines, Prompt Engineering, GenAI Product Development
+        </p>
+        <p>
           <span className="font-semibold text-text-primary">Frontend & Testing: </span>
           React, TypeScript, JavaScript, HTML, CSS, Tailwind, Redux, RTK Query, Vite, Webpack,
           Storybook, Responsive Design, Accessibility (WCAG), Playwright, Cypress, Jest, React
           Testing Library
         </p>
         <p>
-          <span className="font-semibold text-text-primary">Backend, Infrastructure & Tools: </span>
+          <span className="font-semibold text-text-primary">Backend, Infra & Tools: </span>
           Node.js, PostgreSQL, REST APIs, OpenAPI, GraphQL, AWS, Docker, SSE, Git, CI/CD (GitHub
-          Actions), Agile/Scrum, Design Systems, Performance Optimization, DataDog, MixPanel,
-          GenAI/LLM Integration
+          Actions), Agile/Scrum, Design Systems, Performance Optimization, DataDog, MixPanel
         </p>
       </div>
     </section>

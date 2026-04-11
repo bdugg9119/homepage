@@ -9,10 +9,12 @@ function ResumeHeader(): React.ReactElement {
         {" | (412) 757-1715 | Pittsburgh, PA"}
       </p>
       <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary">
-        Senior Frontend Engineer with 8+ years building complex, data-rich web applications in React
-        and TypeScript. Sole frontend technical lead experienced in owning architecture, design
-        systems, and component libraries for B2B SaaS platforms. Focused on performance
-        optimization, accessibility, and scalable UI systems.
+        Software Engineer with 10+ years building complex, data-rich web applications in React and
+        TypeScript. Experienced shipping AI-powered product interfaces with streaming LLM
+        integrations, custom tool orchestration, and conversational UI systems. Technical leader
+        skilled in owning architecture, design systems, and component libraries. Focused on
+        performance optimization, accessibility, and scalable UI systems that accelerate product
+        delivery.
       </p>
     </header>
   );

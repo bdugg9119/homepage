@@ -3,6 +3,16 @@ import { SectionHeading } from "@/shared/ui";
 
 const SKILL_CATEGORIES: SkillCategory[] = [
   {
+    title: "AI & LLM Integration",
+    skills: [
+      "Streaming LLM",
+      "Tool Orchestration",
+      "Conversational UI",
+      "Prompt Engineering",
+      "GenAI Product Dev",
+    ],
+  },
+  {
     title: "Frontend & Testing",
     skills: [
       "React",
@@ -25,7 +35,6 @@ const SKILL_CATEGORIES: SkillCategory[] = [
       "Docker",
       "CI/CD",
       "DataDog",
-      "GenAI / LLM",
     ],
   },
 ];
@@ -34,7 +43,7 @@ function SkillGrid(): React.ReactElement {
   return (
     <section className="mt-20 w-full">
       <SectionHeading title="Technical Skills" />
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {SKILL_CATEGORIES.map((category) => (
           <SkillCard key={category.title} title={category.title} skills={category.skills} />
         ))}
