@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /* Base palette — deep navy to slate */
+  --color-base-950: #0a0e1a;
+  --color-base-900: #0f1629;
+  --color-base-800: #1a2240;
+  --color-base-700: #253057;
+  --color-base-600: #374473;
+  --color-base-500: #4e5e8a;
+  --color-base-400: #7889ad;
+  --color-base-300: #a3b1cc;
+  --color-base-200: #cdd5e5;
+  --color-base-100: #e8ecf3;
+  --color-base-50: #f4f6fa;
+
+  /* Accent — electric teal */
+  --color-accent-500: #06d6a0;
+  --color-accent-400: #34e4b8;
+  --color-accent-300: #72efd2;
+  --color-accent-200: #b0f5e5;
+  --color-accent-100: #ddfbf3;
+  --color-accent-600: #05b888;
+  --color-accent-700: #049a70;
+
+  /* Highlight — warm amber for contrast pops */
+  --color-highlight-500: #f4a261;
+  --color-highlight-400: #f7b97e;
+  --color-highlight-300: #f9d0a0;
+  --color-highlight-600: #e08a3a;
+
+  /* Surface colors for cards/sections */
+  --color-surface: #111827;
+  --color-surface-raised: #1e293b;
+  --color-surface-overlay: #253248;
+
+  /* Text */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+}

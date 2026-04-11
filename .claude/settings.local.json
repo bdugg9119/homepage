@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-vite@latest temp-scaffold --template react-ts)",
+      "Bash(cp -r temp-scaffold/* temp-scaffold/.gitignore .)",
+      "Bash(rm -rf temp-scaffold)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:fsd.how)",
+      "Bash(rm -f src/App.tsx src/main.tsx)",
+      "Bash(rm -rf src/components src/pages)"
+    ]
+  }
+}
