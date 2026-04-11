@@ -1,9 +1,6 @@
 function Hero(): React.ReactElement {
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="mb-6 inline-flex items-center rounded-full border border-accent-500/30 bg-accent-500/10 px-4 py-1.5 text-sm font-medium text-accent-400">
-        Software Engineer
-      </div>
 
       <h1 className="mb-4 text-5xl font-bold leading-tight tracking-tight text-text-primary sm:text-6xl">
         Brian Duggan
