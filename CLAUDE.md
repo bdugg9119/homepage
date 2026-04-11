@@ -13,6 +13,11 @@
 - `npm run format` — format with Prettier
 - `npm run format:check` — check formatting
 - `npm run typecheck` — run TypeScript compiler check
+- `npm run test` — run Vitest in watch mode
+- `npm run test:run` — run Vitest once (CI-friendly)
+- `npm run test:coverage` — run Vitest with coverage report
+- `npm run test:e2e` — run Playwright end-to-end tests
+- `npm run test:e2e:ui` — run Playwright with interactive UI
 
 ## Code Standards (strictly enforced)
 
@@ -85,4 +90,41 @@ src/
 - No TODO comments without a linked issue or clear plan.
 - Prefer early returns over nested conditionals.
 - Every image and interactive element must have accessible text (alt text, aria-labels).
-- Run `npm run lint` and `npm run typecheck` to verify changes before considering work complete.
+- Run `npm run lint`, `npm run typecheck`, and `npm run test:run` to verify changes before considering work complete.
+
+### Testing — Unit Tests (Vitest + React Testing Library)
+
+Unit test files live alongside the code they test (e.g., `SkillCard.test.tsx` next to `SkillCard.tsx`).
+
+**What to test:**
+- Every exported component must have a corresponding `.test.tsx` file.
+- Every data module (e.g., `model/data.ts`) must have a corresponding `.test.ts` file.
+- Test **behavior and rendered output**, not implementation details (no testing internal state, no snapshot tests).
+
+**How to write tests:**
+- Use `describe` blocks grouped by component/module name.
+- Each `it`/`test` block should test **one specific behavior** with a clear, readable name.
+- Query elements using accessible roles and labels (`getByRole`, `getByLabelText`) as the first choice. Use `getByText` only when no semantic role exists.
+- Use `renderWithProviders` from `@/test/render` for any component that needs routing context (NavLink, Link, etc.). Use plain `render` for components that don't need providers.
+- Define a `DEFAULT_PROPS` const at the top of each describe block for components with props — override specific props per test as needed.
+- Never use `container.querySelector` or `container.innerHTML` for assertions unless absolutely no accessible query is possible.
+- Never mock React components. Only mock external services, APIs, or browser APIs when necessary.
+- Avoid `waitFor` unless testing genuinely async behavior (data fetching, timers). Most RTL renders are synchronous.
+
+### Testing — End-to-End Tests (Playwright)
+
+E2E test files live in the `e2e/` directory, organized by page or user flow (e.g., `navigation.spec.ts`, `home.spec.ts`).
+
+**What to test:**
+- Every page must have an e2e spec verifying its critical content renders.
+- Navigation flows between pages must be tested.
+- Interactive features (downloads, form submissions, modals) must be tested for real user behavior.
+
+**How to write tests:**
+- Use Playwright's built-in locators: `getByRole`, `getByLabel`, `getByText` — prefer role-based queries.
+- Always use `{ exact: true }` with `getByText` when the text could match multiple elements on the page.
+- Scope locators to a parent when the same text appears in multiple sections (e.g., `page.locator("nav").getByRole(...)`).
+- Use `test.beforeEach` for common setup like `page.goto`.
+- Never use `page.waitForTimeout` — use Playwright's auto-waiting assertions (`toBeVisible`, `toHaveURL`, etc.).
+- Never use CSS selectors or XPath — always use semantic locators.
+- Test the download flow by awaiting `page.waitForEvent("download")` and asserting the suggested filename.
