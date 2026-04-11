@@ -10,9 +10,8 @@ function Hero(): React.ReactElement {
       </h1>
 
       <p className="mb-8 max-w-2xl text-lg leading-relaxed text-text-secondary">
-        Software Engineer with 10+ years building complex, data-rich web applications in React and
-        TypeScript. Experienced shipping AI-powered product interfaces with streaming LLM
-        integrations, custom tool orchestration, and conversational UI systems.
+        Software Engineer with 10+ years building complex, data-rich web applications. Experienced shipping AI-powered product interfaces with streaming LLM
+        integrations, agentic workflows, custom tool orchestration, and conversational UI systems.
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-text-muted">
