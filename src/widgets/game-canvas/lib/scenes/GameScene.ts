@@ -59,7 +59,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.obstacles, () => { this.handleGameOver(); });
     this.powerUps = this.physics.add.group();
     this.physics.add.overlap(this.player, this.powerUps, (_p, orb) => {
-      this.handlePowerUpCollect(orb as Phaser.GameObjects.Rectangle);
+      this.handlePowerUpCollect(orb as Phaser.GameObjects.GameObject);
     });
   }
 
@@ -82,7 +82,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   private handleSpawn(): void {
-    if (!this.isGravityInverted && Math.random() < POWER_UP_CHANCE) {
+    if (!this.isGravityInverted && this.score >= 500 && Math.random() < POWER_UP_CHANCE) {
       spawnPowerUp(this, this.powerUps, this.scrollSpeed);
     } else {
       spawnObstacle(this, this.obstacles, this.scrollSpeed, this.score);
@@ -103,7 +103,7 @@ export default class GameScene extends Phaser.Scene {
     squishOnJump(this, this.player);
   }
 
-  private handlePowerUpCollect(powerUp: Phaser.GameObjects.Rectangle): void {
+  private handlePowerUpCollect(powerUp: Phaser.GameObjects.GameObject): void {
     powerUp.destroy();
     this.score += GAME_CONFIG.inversionBonus;
     updateHudScore(this, this.hud, this.score);
