@@ -4,7 +4,7 @@ import { createGameHud, updateHudScore, type GameHud } from "./hud";
 import { spawnObstacle, cleanOffscreenObstacles } from "./obstacles";
 import { createPlayer, createBoundaries, createPlayerTrail, squishOnJump, checkLanding, type PlayerSprite } from "./player";
 import { spawnPowerUp, createInversionBar, updateInversionBar } from "./powerup";
-import { spawnStarPowerUp, activateStarMode, updateStarBar, createStarExplosion } from "./star";
+import { spawnStarPowerUp, activateStarMode, updateStarState, createStarExplosion } from "./star";
 
 const SCENE_KEY = "GameScene";
 const POWER_UP_CHANCE = 0.12;
@@ -29,6 +29,7 @@ export default class GameScene extends Phaser.Scene {
   private starBar: Phaser.GameObjects.Rectangle | null = null;
   private starStartTime = 0;
   private starEndTimer: Phaser.Time.TimerEvent | null = null;
+  private starEmitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
   private preStarSpeed = 0;
 
   constructor() { super({ key: SCENE_KEY }); }
@@ -36,7 +37,7 @@ export default class GameScene extends Phaser.Scene {
     this.score = 0; this.scrollSpeed = GAME_CONFIG.initialScrollSpeed;
     this.isGameOver = false; this.isGravityInverted = false; this.isStarPowered = false;
     this.inversionBar = null; this.inversionEndTimer = null;
-    this.starBar = null; this.starEndTimer = null; this.wasOnGround = false;
+    this.starBar = null; this.starEndTimer = null; this.starEmitter = null; this.wasOnGround = false;
     this.player = createPlayer(this);
     createBoundaries(this, this.player); createPlayerTrail(this, this.player);
     this.createGroups(); this.hud = createGameHud(this);
@@ -48,12 +49,12 @@ export default class GameScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     if (this.isGameOver) { return; }
     this.applyGravity(delta);
-    this.wasOnGround = checkLanding(this, this.player, this.wasOnGround, this.isGravityInverted);
+    this.wasOnGround = checkLanding(this, this.player, this.wasOnGround, this.isGravityInverted, this.isStarPowered);
     if (this.isGravityInverted && this.inversionBar) {
       updateInversionBar(this.inversionBar, 1 - (this.time.now - this.inversionStartTime) / GAME_CONFIG.inversionDurationMs);
     }
     if (this.isStarPowered && this.starBar) {
-      updateStarBar(this.starBar, 1 - (this.time.now - this.starStartTime) / GAME_CONFIG.starDurationMs);
+      updateStarState(this.starBar, this.player, 1 - (this.time.now - this.starStartTime) / GAME_CONFIG.starDurationMs);
     }
     cleanOffscreenObstacles(this.obstacles); cleanOffscreenObstacles(this.powerUps);
   }
@@ -96,7 +97,7 @@ export default class GameScene extends Phaser.Scene {
   private handleJump(): void {
     if (this.isGameOver) { return; }
     this.player.body.setVelocityY(GAME_CONFIG.jumpForce * (this.isGravityInverted ? 1 : -1));
-    squishOnJump(this, this.player);
+    if (!this.isStarPowered) { squishOnJump(this, this.player); }
   }
   private handlePowerUpCollect(powerUp: Phaser.GameObjects.GameObject): void {
     const isStar = powerUp.getData("type") === "star";
@@ -116,11 +117,11 @@ export default class GameScene extends Phaser.Scene {
   }
   private startStarMode(): void {
     this.isStarPowered = true; this.starStartTime = this.time.now; this.preStarSpeed = this.scrollSpeed;
-    this.starBar?.destroy(); this.starEndTimer?.destroy();
+    this.starBar?.destroy(); this.starEndTimer?.destroy(); this.starEmitter?.destroy();
     const r = activateStarMode(this, this.player, this.scrollSpeed, () => {
-      this.isStarPowered = false; this.scrollSpeed = this.preStarSpeed; this.starBar = null; this.starEndTimer = null;
+      this.isStarPowered = false; this.scrollSpeed = this.preStarSpeed; this.starBar = null; this.starEndTimer = null; this.starEmitter = null;
     });
-    this.scrollSpeed = r.boostedSpeed; this.starBar = r.bar; this.starEndTimer = r.timer;
+    this.scrollSpeed = r.boostedSpeed; this.starBar = r.bar; this.starEndTimer = r.timer; this.starEmitter = r.emitter;
   }
   private smashObstacle(obs: Phaser.GameObjects.GameObject): void {
     const r = obs as Phaser.GameObjects.Rectangle;
@@ -142,7 +143,7 @@ export default class GameScene extends Phaser.Scene {
   private handleGameOver(): void {
     if (this.isGameOver) { return; }
     this.isGameOver = true;
-    this.scoreTimer.destroy(); this.spawnTimer.destroy(); this.inversionEndTimer?.destroy(); this.starEndTimer?.destroy();
+    this.scoreTimer.destroy(); this.spawnTimer.destroy(); this.inversionEndTimer?.destroy(); this.starEndTimer?.destroy(); this.starEmitter?.destroy();
     this.physics.pause();
     this.scene.start("GameOverScene", { score: this.score, isNewHighScore: this.hud.hasNewHighScore });
   }

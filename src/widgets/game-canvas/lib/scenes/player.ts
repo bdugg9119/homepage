@@ -102,10 +102,10 @@ export function squishOnJump(scene: Phaser.Scene, player: PlayerSprite): void {
 
 export function checkLanding(
   scene: Phaser.Scene, player: PlayerSprite,
-  wasOnGround: boolean, isInverted: boolean,
+  wasOnGround: boolean, isInverted: boolean, skipSquish = false,
 ): boolean {
   const isOnGround = isInverted ? player.body.blocked.up : player.body.blocked.down;
-  if (isOnGround && !wasOnGround) { squishOnLand(scene, player); return true; }
+  if (isOnGround && !wasOnGround && !skipSquish) { squishOnLand(scene, player); return true; }
   if (wasOnGround) {
     const vy = player.body.velocity.y;
     return isInverted ? vy <= 50 : vy >= -50;

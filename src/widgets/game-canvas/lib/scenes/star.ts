@@ -63,6 +63,7 @@ export function spawnStarPowerUp(
 type StarResult = {
   bar: Phaser.GameObjects.Rectangle;
   timer: Phaser.Time.TimerEvent;
+  emitter: Phaser.GameObjects.Particles.ParticleEmitter;
   boostedSpeed: number;
 };
 
@@ -70,15 +71,32 @@ export function activateStarMode(
   scene: Phaser.Scene, player: PlayerSprite, scrollSpeed: number, onEnd: () => void,
 ): StarResult {
   player.setFillStyle(STAR_COLOR);
-  player.setScale(1.5, 1.5);
+  player.setScale(2, 2);
+  scene.tweens.killTweensOf(player);
+  ensureStarParticleTexture(scene);
+  const emitter = scene.add.particles(0, 0, "star_particle", {
+    follow: player, speed: { min: 40, max: 120 },
+    lifespan: 500, scale: { start: 1.5, end: 0 },
+    alpha: { start: 0.9, end: 0 }, frequency: 10,
+    quantity: 4, angle: { min: 90, max: 270 },
+  });
   const bar = createStarBar(scene);
   const timer = scene.time.delayedCall(GAME_CONFIG.starDurationMs, () => {
     player.setFillStyle(GAME_CONFIG.playerColor);
-    player.setScale(1, 1);
-    bar.destroy();
+    player.setScale(1, 1); player.setAlpha(1);
+    emitter.destroy(); bar.destroy();
     onEnd();
   });
-  return { bar, timer, boostedSpeed: scrollSpeed * GAME_CONFIG.starSpeedMultiplier };
+  return { bar, timer, emitter, boostedSpeed: scrollSpeed * GAME_CONFIG.starSpeedMultiplier };
+}
+
+function ensureStarParticleTexture(scene: Phaser.Scene): void {
+  if (scene.textures.exists("star_particle")) { return; }
+  const gfx = scene.add.graphics();
+  gfx.fillStyle(STAR_COLOR, 1);
+  gfx.fillRect(0, 0, 6, 6);
+  gfx.generateTexture("star_particle", 6, 6);
+  gfx.destroy();
 }
 
 function createStarBar(scene: Phaser.Scene): Phaser.GameObjects.Rectangle {
@@ -88,12 +106,19 @@ function createStarBar(scene: Phaser.Scene): Phaser.GameObjects.Rectangle {
   return bar;
 }
 
-export function updateStarBar(bar: Phaser.GameObjects.Rectangle, fraction: number): void {
-  const clamped = Math.max(0, Math.min(1, fraction));
-  bar.width = GAME_CONFIG.width * 0.6 * clamped;
-  if (clamped < 0.25) {
-    bar.setAlpha(0.5 + Math.sin(Date.now() * 0.02) * 0.5);
-  } else { bar.setAlpha(1); }
+export function updateStarState(
+  bar: Phaser.GameObjects.Rectangle, player: PlayerSprite, fraction: number,
+): void {
+  const f = Math.max(0, Math.min(1, fraction));
+  bar.width = GAME_CONFIG.width * 0.6 * f;
+  if (f < 0.25) {
+    const flash = 0.5 + Math.sin(Date.now() * 0.02) * 0.5;
+    bar.setAlpha(flash); player.setAlpha(flash);
+    player.setScale(1 + f * 4, 1 + f * 4);
+  } else if (f < 0.5) {
+    bar.setAlpha(1);
+    player.setAlpha(0.7 + Math.sin(Date.now() * 0.01) * 0.3);
+  } else { bar.setAlpha(1); player.setAlpha(1); }
 }
 
 export function createStarExplosion(scene: Phaser.Scene, x: number, y: number): void {

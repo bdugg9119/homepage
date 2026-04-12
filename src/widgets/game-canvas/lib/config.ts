@@ -54,8 +54,8 @@ export const GAME_CONFIG: GameConfig = {
   obstacleColor: 0xf4a261,
   boundaryColor: 0x1a2240,
   starDurationMs: 6000,
-  starSpeedMultiplier: 1.5,
-  starScoreMultiplier: 3,
-  starDestroyBonus: 25,
+  starSpeedMultiplier: 2.5,
+  starScoreMultiplier: 5,
+  starDestroyBonus: 50,
   starColor: 0xffd700,
 };
