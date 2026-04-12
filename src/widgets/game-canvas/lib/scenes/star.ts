@@ -1,0 +1,112 @@
+import * as Phaser from "phaser";
+import { GAME_CONFIG } from "../config";
+import type { PlayerSprite } from "./player";
+
+const STAR_SIZE = 24;
+const STAR_COLOR = GAME_CONFIG.starColor;
+const STAR_GLOW = 0xffec8b;
+const TEXTURE_KEY = "star_power";
+
+function drawStar(
+  gfx: Phaser.GameObjects.Graphics, cx: number, cy: number, outer: number, inner: number,
+): void {
+  gfx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const r = i % 2 === 0 ? outer : inner;
+    const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    if (i === 0) { gfx.moveTo(x, y); } else { gfx.lineTo(x, y); }
+  }
+  gfx.closePath();
+  gfx.fillPath();
+}
+
+function ensureStarTexture(scene: Phaser.Scene): void {
+  if (scene.textures.exists(TEXTURE_KEY)) { return; }
+  const s = STAR_SIZE;
+  const mid = s / 2;
+  const gfx = scene.add.graphics();
+  gfx.fillStyle(STAR_GLOW, 0.5);
+  drawStar(gfx, mid, mid, mid, mid * 0.4);
+  gfx.fillStyle(STAR_COLOR, 1);
+  drawStar(gfx, mid, mid, mid - 2, mid * 0.35);
+  gfx.generateTexture(TEXTURE_KEY, s, s);
+  gfx.destroy();
+}
+
+export function spawnStarPowerUp(
+  scene: Phaser.Scene,
+  group: Phaser.Physics.Arcade.Group,
+  scrollSpeed: number,
+): void {
+  ensureStarTexture(scene);
+  const { width, height, boundaryThickness } = GAME_CONFIG;
+  const margin = boundaryThickness + STAR_SIZE;
+  const x = width + STAR_SIZE;
+  const y = Phaser.Math.Between(margin, height - margin);
+  const star = scene.add.image(x, y, TEXTURE_KEY);
+  star.setData("type", "star");
+  scene.physics.add.existing(star);
+  group.add(star);
+  const body = star.body as Phaser.Physics.Arcade.Body;
+  body.setVelocityX(-scrollSpeed);
+  body.setAllowGravity(false);
+  body.setImmovable(true);
+  scene.tweens.add({
+    targets: star, scaleX: 1.4, scaleY: 1.4, alpha: 0.5,
+    duration: 500, yoyo: true, loop: -1, ease: "Sine.easeInOut",
+  });
+  scene.tweens.add({ targets: star, angle: 360, duration: 2000, loop: -1 });
+}
+
+type StarResult = {
+  bar: Phaser.GameObjects.Rectangle;
+  timer: Phaser.Time.TimerEvent;
+  boostedSpeed: number;
+};
+
+export function activateStarMode(
+  scene: Phaser.Scene, player: PlayerSprite, scrollSpeed: number, onEnd: () => void,
+): StarResult {
+  player.setFillStyle(STAR_COLOR);
+  player.setScale(1.5, 1.5);
+  const bar = createStarBar(scene);
+  const timer = scene.time.delayedCall(GAME_CONFIG.starDurationMs, () => {
+    player.setFillStyle(GAME_CONFIG.playerColor);
+    player.setScale(1, 1);
+    bar.destroy();
+    onEnd();
+  });
+  return { bar, timer, boostedSpeed: scrollSpeed * GAME_CONFIG.starSpeedMultiplier };
+}
+
+function createStarBar(scene: Phaser.Scene): Phaser.GameObjects.Rectangle {
+  const barWidth = GAME_CONFIG.width * 0.6;
+  const bar = scene.add.rectangle(GAME_CONFIG.width / 2, GAME_CONFIG.height - 32, barWidth, 6, STAR_COLOR);
+  bar.setDepth(10);
+  return bar;
+}
+
+export function updateStarBar(bar: Phaser.GameObjects.Rectangle, fraction: number): void {
+  const clamped = Math.max(0, Math.min(1, fraction));
+  bar.width = GAME_CONFIG.width * 0.6 * clamped;
+  if (clamped < 0.25) {
+    bar.setAlpha(0.5 + Math.sin(Date.now() * 0.02) * 0.5);
+  } else { bar.setAlpha(1); }
+}
+
+export function createStarExplosion(scene: Phaser.Scene, x: number, y: number): void {
+  const count = 6;
+  for (let i = 0; i < count; i++) {
+    const shard = scene.add.rectangle(x, y, 8, 8, STAR_COLOR);
+    const angle = (i / count) * Math.PI * 2;
+    scene.tweens.add({
+      targets: shard,
+      x: x + Math.cos(angle) * 60, y: y + Math.sin(angle) * 60,
+      alpha: 0, scaleX: 0.2, scaleY: 0.2,
+      duration: 300, ease: "Quad.easeOut",
+      onComplete: () => { shard.destroy(); },
+    });
+  }
+}

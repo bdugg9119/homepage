@@ -33,6 +33,7 @@ export function spawnPowerUp(
   const y = Phaser.Math.Between(margin, height - margin);
 
   const orb = scene.add.image(x, y, TEXTURE_KEY);
+  orb.setData("type", "gravity");
   scene.physics.add.existing(orb);
   group.add(orb);
 

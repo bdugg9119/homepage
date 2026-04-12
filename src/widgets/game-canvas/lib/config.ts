@@ -22,6 +22,11 @@ export type GameConfig = {
   readonly inversionBonus: number;
   readonly obstacleColor: number;
   readonly boundaryColor: number;
+  readonly starDurationMs: number;
+  readonly starSpeedMultiplier: number;
+  readonly starScoreMultiplier: number;
+  readonly starDestroyBonus: number;
+  readonly starColor: number;
 };
 
 export const GAME_CONFIG: GameConfig = {
@@ -48,4 +53,9 @@ export const GAME_CONFIG: GameConfig = {
   inversionBonus: 100,
   obstacleColor: 0xf4a261,
   boundaryColor: 0x1a2240,
+  starDurationMs: 6000,
+  starSpeedMultiplier: 1.5,
+  starScoreMultiplier: 3,
+  starDestroyBonus: 25,
+  starColor: 0xffd700,
 };
