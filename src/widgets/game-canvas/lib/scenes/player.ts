@@ -6,14 +6,14 @@ type PlayerSprite = Phaser.GameObjects.Rectangle & {
 };
 
 export function createPlayer(scene: Phaser.Scene): PlayerSprite {
-  const { playerOffsetX, height, boundaryThickness, playerSize, playerColor, gravity, width } = GAME_CONFIG;
+  const { playerOffsetX, height, boundaryThickness, playerSize, playerColor, width } = GAME_CONFIG;
 
   const rect = scene.add.rectangle(playerOffsetX, height / 2, playerSize, playerSize, playerColor);
   scene.physics.add.existing(rect);
 
   const player = rect as PlayerSprite;
   player.body.setCollideWorldBounds(false);
-  player.body.setGravityY(gravity);
+  player.body.setAllowGravity(false);
 
   const playableTop = boundaryThickness;
   const playableHeight = height - boundaryThickness * 2;

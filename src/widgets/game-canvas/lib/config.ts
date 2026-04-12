@@ -2,6 +2,7 @@ export type GameConfig = {
   readonly width: number;
   readonly height: number;
   readonly gravity: number;
+  readonly flipImpulse: number;
   readonly maxVelocityY: number;
   readonly playerSize: number;
   readonly playerOffsetX: number;
@@ -24,8 +25,9 @@ export type GameConfig = {
 export const GAME_CONFIG: GameConfig = {
   width: 800,
   height: 400,
-  gravity: 800,
-  maxVelocityY: 500,
+  gravity: 1400,
+  flipImpulse: 350,
+  maxVelocityY: 600,
   playerSize: 20,
   playerOffsetX: 120,
   boundaryThickness: 10,

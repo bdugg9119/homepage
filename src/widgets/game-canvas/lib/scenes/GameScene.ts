@@ -21,7 +21,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.resetState();
+    this.isGravityDown = true;
+    this.score = 0;
+    this.scrollSpeed = GAME_CONFIG.initialScrollSpeed;
+    this.isGameOver = false;
+
     this.player = createPlayer(this);
     createBoundaries(this, this.player);
     this.createObstacles();
@@ -30,20 +34,13 @@ export default class GameScene extends Phaser.Scene {
     this.startTimers();
   }
 
-  update(): void {
+  update(_time: number, delta: number): void {
     if (this.isGameOver) {
       return;
     }
 
-    this.clampPlayerVelocity();
+    this.applyGravity(delta);
     cleanOffscreenObstacles(this.obstacles);
-  }
-
-  private resetState(): void {
-    this.isGravityDown = true;
-    this.score = 0;
-    this.scrollSpeed = GAME_CONFIG.initialScrollSpeed;
-    this.isGameOver = false;
   }
 
   private createHud(): void {
@@ -68,20 +65,37 @@ export default class GameScene extends Phaser.Scene {
     this.input.on("pointerdown", () => {
       this.handleFlipGravity();
     });
+
+    this.input.keyboard?.on("keydown-SPACE", () => {
+      this.handleFlipGravity();
+    });
   }
 
   private startTimers(): void {
     this.scoreTimer = this.time.addEvent({
       delay: GAME_CONFIG.scoreIntervalMs,
-      callback: () => { this.incrementScore(); },
+      callback: () => {
+        this.score += 1;
+        this.scoreText.setText(String(this.score));
+      },
       loop: true,
     });
 
     this.spawnTimer = this.time.addEvent({
       delay: GAME_CONFIG.spawnIntervalMs,
-      callback: () => { this.handleSpawn(); },
+      callback: () => {
+        spawnObstaclePair(this, this.obstacles, this.scrollSpeed);
+        this.rampDifficulty();
+      },
       loop: true,
     });
+  }
+
+  private applyGravity(delta: number): void {
+    const direction = this.isGravityDown ? 1 : -1;
+    const vy = this.player.body.velocity.y + GAME_CONFIG.gravity * direction * (delta / 1000);
+    const max = GAME_CONFIG.maxVelocityY;
+    this.player.body.setVelocityY(Math.max(-max, Math.min(vy, max)));
   }
 
   private handleFlipGravity(): void {
@@ -90,19 +104,8 @@ export default class GameScene extends Phaser.Scene {
     }
 
     this.isGravityDown = !this.isGravityDown;
-    const direction = this.isGravityDown ? 1 : -1;
-    this.player.body.setGravityY(GAME_CONFIG.gravity * direction);
-    this.player.body.setVelocityY(0);
-  }
-
-  private incrementScore(): void {
-    this.score += 1;
-    this.scoreText.setText(String(this.score));
-  }
-
-  private handleSpawn(): void {
-    spawnObstaclePair(this, this.obstacles, this.scrollSpeed);
-    this.rampDifficulty();
+    const impulse = this.isGravityDown ? GAME_CONFIG.flipImpulse : -GAME_CONFIG.flipImpulse;
+    this.player.body.setVelocityY(impulse);
   }
 
   private rampDifficulty(): void {
@@ -118,18 +121,12 @@ export default class GameScene extends Phaser.Scene {
       this.spawnTimer.destroy();
       this.spawnTimer = this.time.addEvent({
         delay: Math.max(currentDelay - spawnIntervalDecrement, minSpawnIntervalMs),
-        callback: () => { this.handleSpawn(); },
+        callback: () => {
+          spawnObstaclePair(this, this.obstacles, this.scrollSpeed);
+          this.rampDifficulty();
+        },
         loop: true,
       });
-    }
-  }
-
-  private clampPlayerVelocity(): void {
-    const vy = this.player.body.velocity.y;
-    const max = GAME_CONFIG.maxVelocityY;
-
-    if (Math.abs(vy) > max) {
-      this.player.body.setVelocityY(vy > 0 ? max : -max);
     }
   }
 
