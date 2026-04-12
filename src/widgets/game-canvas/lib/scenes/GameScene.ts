@@ -33,14 +33,24 @@ export default class GameScene extends Phaser.Scene {
   private preStarSpeed = 0;
 
   constructor() { super({ key: SCENE_KEY }); }
+  
   create(): void {
-    this.score = 0; this.scrollSpeed = GAME_CONFIG.initialScrollSpeed;
-    this.isGameOver = false; this.isGravityInverted = false; this.isStarPowered = false;
-    this.inversionBar = null; this.inversionEndTimer = null;
-    this.starBar = null; this.starEndTimer = null; this.starEmitter = null; this.wasOnGround = false;
+    this.score = 0;
+    this.scrollSpeed = GAME_CONFIG.initialScrollSpeed;
+    this.isGameOver = false;
+    this.isGravityInverted = false;
+    this.isStarPowered = false;
+    this.inversionBar = null;
+    this.inversionEndTimer = null;
+    this.starBar = null;
+    this.starEndTimer = null;
+    this.starEmitter = null;
+    this.wasOnGround = false;
     this.player = createPlayer(this);
-    createBoundaries(this, this.player); createPlayerTrail(this, this.player);
-    this.createGroups(); this.hud = createGameHud(this);
+    createBoundaries(this, this.player);
+    createPlayerTrail(this, this.player);
+    this.createGroups();
+    this.hud = createGameHud(this);
     this.input.on("pointerdown", () => { this.handleJump(); });
     this.input.keyboard?.on("keydown-SPACE", () => { this.handleJump(); });
     this.startTimers();
@@ -72,13 +82,21 @@ export default class GameScene extends Phaser.Scene {
   }
 
   private startTimers(): void {
-    this.scoreTimer = this.time.addEvent({ delay: GAME_CONFIG.scoreIntervalMs, loop: true,
-      callback: () => { this.score += this.isStarPowered ? GAME_CONFIG.starScoreMultiplier : 1; updateHudScore(this, this.hud, this.score); },
+    this.scoreTimer = this.time.addEvent({
+      delay: GAME_CONFIG.scoreIntervalMs,
+      loop: true,
+      callback: () => {
+        this.score += this.isStarPowered ? GAME_CONFIG.starScoreMultiplier : 1;
+        updateHudScore(this, this.hud, this.score);
+      },
     });
-    this.spawnTimer = this.time.addEvent({ delay: GAME_CONFIG.spawnIntervalMs, loop: true,
+    this.spawnTimer = this.time.addEvent({
+      delay: GAME_CONFIG.spawnIntervalMs,
+      loop: true,
       callback: () => { this.handleSpawn(); },
     });
   }
+
   private handleSpawn(): void {
     const roll = Math.random();
     if (!this.isStarPowered && this.score >= 800 && roll < STAR_CHANCE) {
@@ -88,17 +106,20 @@ export default class GameScene extends Phaser.Scene {
     } else { spawnObstacle(this, this.obstacles, this.scrollSpeed, this.score); }
     this.rampDifficulty();
   }
+
   private applyGravity(delta: number): void {
     const dir = this.isGravityInverted ? -1 : 1;
     const vy = this.player.body.velocity.y + GAME_CONFIG.gravity * dir * (delta / 1000);
     const max = GAME_CONFIG.maxVelocityY;
     this.player.body.setVelocityY(Math.max(-max, Math.min(vy, max)));
   }
+
   private handleJump(): void {
     if (this.isGameOver) { return; }
     this.player.body.setVelocityY(GAME_CONFIG.jumpForce * (this.isGravityInverted ? 1 : -1));
     if (!this.isStarPowered) { squishOnJump(this, this.player); }
   }
+
   private handlePowerUpCollect(powerUp: Phaser.GameObjects.GameObject): void {
     const isStar = powerUp.getData("type") === "star";
     powerUp.destroy();
@@ -106,6 +127,7 @@ export default class GameScene extends Phaser.Scene {
     this.score += GAME_CONFIG.inversionBonus;
     updateHudScore(this, this.hud, this.score); this.startGravityInversion();
   }
+
   private startGravityInversion(): void {
     this.isGravityInverted = true; this.inversionStartTime = this.time.now;
     this.inversionBar?.destroy(); this.inversionBar = createInversionBar(this);
@@ -115,19 +137,35 @@ export default class GameScene extends Phaser.Scene {
       this.inversionBar?.destroy(); this.inversionBar = null; this.inversionEndTimer = null;
     });
   }
+
   private startStarMode(): void {
-    this.isStarPowered = true; this.starStartTime = this.time.now; this.preStarSpeed = this.scrollSpeed;
-    this.starBar?.destroy(); this.starEndTimer?.destroy(); this.starEmitter?.destroy();
+    this.isStarPowered = true;
+    this.starStartTime = this.time.now;
+    this.preStarSpeed = this.scrollSpeed;
+    this.starBar?.destroy();
+    this.starEndTimer?.destroy();
+    this.starEmitter?.destroy();
     const r = activateStarMode(this, this.player, this.scrollSpeed, () => {
-      this.isStarPowered = false; this.scrollSpeed = this.preStarSpeed; this.starBar = null; this.starEndTimer = null; this.starEmitter = null;
+      this.isStarPowered = false;
+      this.scrollSpeed = this.preStarSpeed;
+      this.starBar = null;
+      this.starEndTimer = null;
+      this.starEmitter = null;
     });
-    this.scrollSpeed = r.boostedSpeed; this.starBar = r.bar; this.starEndTimer = r.timer; this.starEmitter = r.emitter;
+    this.scrollSpeed = r.boostedSpeed;
+    this.starBar = r.bar;
+    this.starEndTimer = r.timer;
+    this.starEmitter = r.emitter;
   }
+
   private smashObstacle(obs: Phaser.GameObjects.GameObject): void {
     const r = obs as Phaser.GameObjects.Rectangle;
-    createStarExplosion(this, r.x, r.y); r.destroy();
-    this.score += GAME_CONFIG.starDestroyBonus; updateHudScore(this, this.hud, this.score);
+    createStarExplosion(this, r.x, r.y);
+    r.destroy();
+    this.score += GAME_CONFIG.starDestroyBonus;
+    updateHudScore(this, this.hud, this.score);
   }
+
   private rampDifficulty(): void {
     const { maxScrollSpeed, speedIncrement, minSpawnIntervalMs, spawnIntervalDecrement } = GAME_CONFIG;
     this.scrollSpeed = Math.min(this.scrollSpeed + speedIncrement, maxScrollSpeed);
@@ -140,11 +178,19 @@ export default class GameScene extends Phaser.Scene {
       });
     }
   }
+
   private handleGameOver(): void {
     if (this.isGameOver) { return; }
     this.isGameOver = true;
-    this.scoreTimer.destroy(); this.spawnTimer.destroy(); this.inversionEndTimer?.destroy(); this.starEndTimer?.destroy(); this.starEmitter?.destroy();
+    this.scoreTimer.destroy();
+    this.spawnTimer.destroy();
+    this.inversionEndTimer?.destroy();
+    this.starEndTimer?.destroy();
+    this.starEmitter?.destroy();
     this.physics.pause();
-    this.scene.start("GameOverScene", { score: this.score, isNewHighScore: this.hud.hasNewHighScore });
+    this.scene.start("GameOverScene", {
+      score: this.score,
+      isNewHighScore: this.hud.hasNewHighScore
+    });
   }
 }
