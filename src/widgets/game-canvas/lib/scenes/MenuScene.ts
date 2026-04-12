@@ -30,7 +30,7 @@ export default class MenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(centerX, centerY + 40, "Flip gravity to dodge obstacles", {
+      .text(centerX, centerY + 40, "Tap or press space to jump", {
         fontFamily: "monospace",
         fontSize: "14px",
         color: "#94a3b8",

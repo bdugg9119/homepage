@@ -2,7 +2,7 @@ export type GameConfig = {
   readonly width: number;
   readonly height: number;
   readonly gravity: number;
-  readonly flipImpulse: number;
+  readonly jumpForce: number;
   readonly maxVelocityY: number;
   readonly playerSize: number;
   readonly playerOffsetX: number;
@@ -18,6 +18,8 @@ export type GameConfig = {
   readonly scoreIntervalMs: number;
   readonly backgroundColor: number;
   readonly playerColor: number;
+  readonly inversionDurationMs: number;
+  readonly inversionBonus: number;
   readonly obstacleColor: number;
   readonly boundaryColor: number;
 };
@@ -25,8 +27,8 @@ export type GameConfig = {
 export const GAME_CONFIG: GameConfig = {
   width: 800,
   height: 400,
-  gravity: 1400,
-  flipImpulse: 350,
+  gravity: 1200,
+  jumpForce: 420,
   maxVelocityY: 600,
   playerSize: 20,
   playerOffsetX: 120,
@@ -42,6 +44,8 @@ export const GAME_CONFIG: GameConfig = {
   scoreIntervalMs: 100,
   backgroundColor: 0x0a0e1a,
   playerColor: 0x06d6a0,
+  inversionDurationMs: 5000,
+  inversionBonus: 100,
   obstacleColor: 0xf4a261,
   boundaryColor: 0x1a2240,
 };

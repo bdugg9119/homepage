@@ -1,9 +1,10 @@
 import * as Phaser from "phaser";
 import { GAME_CONFIG } from "../config";
-import { getHighScore, setHighScore } from "../highScore";
+import { getHighScore } from "../highScore";
 
 type GameOverData = {
   readonly score: number;
+  readonly isNewHighScore: boolean;
 };
 
 const SCENE_KEY = "GameOverScene";
@@ -16,13 +17,8 @@ export default class GameOverScene extends Phaser.Scene {
   create(data: GameOverData): void {
     const centerX = GAME_CONFIG.width / 2;
     const centerY = GAME_CONFIG.height / 2;
-    const { score } = data;
-    const previousHigh = getHighScore();
-    const isNewHighScore = score > previousHigh;
-
-    if (isNewHighScore) {
-      setHighScore(score);
-    }
+    const { score, isNewHighScore } = data;
+    const highScore = getHighScore();
 
     this.add
       .text(centerX, centerY - 80, "GAME OVER", {
@@ -40,10 +36,8 @@ export default class GameOverScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const highScoreValue = isNewHighScore ? score : previousHigh;
-
     this.add
-      .text(centerX, centerY + 10, "High Score: " + String(highScoreValue), {
+      .text(centerX, centerY + 10, "High Score: " + String(highScore), {
         fontFamily: "monospace",
         fontSize: "16px",
         color: "#f4a261",
