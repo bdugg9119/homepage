@@ -11,10 +11,11 @@ describe("Navbar", () => {
     expect(titleLink).toHaveAttribute("href", "/");
   });
 
-  it("renders Home and Resume navigation links", () => {
+  it("renders Home, Resume, and Game navigation links", () => {
     renderWithProviders(<Navbar />);
 
     expect(screen.getByRole("link", { name: /^home$/i })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: /^resume$/i })).toHaveAttribute("href", "/resume");
+    expect(screen.getByRole("link", { name: /^game$/i })).toHaveAttribute("href", "/game");
   });
 });

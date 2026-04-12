@@ -15,6 +15,7 @@ function Navbar(): React.ReactElement {
         <div className="flex items-center gap-1">
           <NavItem to="/" label="Home" />
           <NavItem to="/resume" label="Resume" />
+          <NavItem to="/game" label="Game" />
         </div>
       </div>
     </nav>

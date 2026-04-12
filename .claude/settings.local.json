@@ -10,7 +10,9 @@
       "Bash(rm -f src/App.tsx src/main.tsx)",
       "Bash(rm -rf src/components src/pages)",
       "WebSearch",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "Bash(npx vitest:*)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
