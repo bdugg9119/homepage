@@ -141,3 +141,9 @@ export function cleanOffscreenObstacles(group: Phaser.Physics.Arcade.Group): voi
     if (rect.x < -rect.width) { rect.destroy(); }
   });
 }
+
+export function setGroupSpeed(group: Phaser.Physics.Arcade.Group, speed: number): void {
+  group.getChildren().forEach((obj) => {
+    (obj.body as Phaser.Physics.Arcade.Body).setVelocityX(-speed);
+  });
+}
