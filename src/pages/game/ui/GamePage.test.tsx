@@ -5,7 +5,7 @@ import GamePage from "./GamePage";
 
 vi.mock("@/widgets/game-canvas", () => ({
   GameCanvas: function MockGameCanvas(): React.ReactElement {
-    return <div aria-label="Gravity Runner game" />;
+    return <div aria-label="Jumpy Square game" />;
   },
 }));
 
@@ -13,6 +13,6 @@ describe("GamePage", () => {
   it("renders the game canvas", () => {
     renderWithProviders(<GamePage />);
 
-    expect(screen.getByLabelText("Gravity Runner game")).toBeInTheDocument();
+    expect(screen.getByLabelText("Jumpy Square game")).toBeInTheDocument();
   });
 });

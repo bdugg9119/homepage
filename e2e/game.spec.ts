@@ -6,7 +6,7 @@ test.describe("Game page", () => {
   });
 
   test("renders the game canvas", async ({ page }) => {
-    await expect(page.getByLabel("Gravity Runner game")).toBeVisible();
+    await expect(page.getByLabel("Jumpy Square game")).toBeVisible();
     await expect(page.locator("canvas")).toBeVisible();
   });
 

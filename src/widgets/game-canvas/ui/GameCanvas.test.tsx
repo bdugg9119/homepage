@@ -11,6 +11,6 @@ describe("GameCanvas", () => {
   it("renders the game container", () => {
     renderWithProviders(<GameCanvas />);
 
-    expect(screen.getByLabelText("Gravity Runner game")).toBeInTheDocument();
+    expect(screen.getByLabelText("Jumpy Square game")).toBeInTheDocument();
   });
 });

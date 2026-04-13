@@ -14,7 +14,7 @@ export default class MenuScene extends Phaser.Scene {
     const centerY = GAME_CONFIG.height / 2;
 
     this.add
-      .text(centerX, centerY - 60, "GRAVITY RUNNER", {
+      .text(centerX, centerY - 60, "JUMPY SQUARE", {
         fontFamily: "monospace",
         fontSize: "36px",
         color: "#06d6a0",

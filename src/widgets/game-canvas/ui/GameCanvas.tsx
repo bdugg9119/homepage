@@ -37,7 +37,7 @@ function GameCanvas(): React.ReactElement {
     <div
       ref={containerRef}
       className="mx-auto aspect-[2/1] w-full max-w-4xl overflow-hidden rounded-lg"
-      aria-label="Gravity Runner game"
+      aria-label="Jumpy Square game"
     />
   );
 }
