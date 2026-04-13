@@ -82,7 +82,7 @@ export default class GameScene extends Phaser.Scene {
     const roll = Math.random();
     if (!this.isStarPowered && this.score >= 800 && roll < STAR_CHANCE) {
       spawnStarPowerUp(this, this.powerUps, this.scrollSpeed);
-    } else if (!this.isGravityInverted && !this.isStarPowered && this.score >= 500 && roll < POWER_UP_CHANCE) {
+    } else if (!this.isGravityInverted && this.score >= 250 && roll < POWER_UP_CHANCE) {
       spawnPowerUp(this, this.powerUps, this.scrollSpeed);
     } else { spawnObstacle(this, this.obstacles, this.scrollSpeed, this.score); }
     this.rampDifficulty();
