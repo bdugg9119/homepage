@@ -17,6 +17,8 @@
 
 ## Architecture: Feature-Sliced Design (FSD)
 
+The `src/` directory is organized into layers, each with slices and segments
+
 ```
 src/
   app/          — Entrypoint, router, global styles (no slices)
